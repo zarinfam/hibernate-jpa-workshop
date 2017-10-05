@@ -1,12 +1,10 @@
 package jpa;
 
-import jpa.util.EMF;
+import jpa.models.Message;
+import jpa.models.User;
 import org.hibernate.Session;
 
-import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 import static jpa.util.EMF.runJpaCode;
 
@@ -16,6 +14,19 @@ import static jpa.util.EMF.runJpaCode;
 public class MainJpa {
 
     public static void main(String[] args) {
+
+        validation();
+
+    }
+
+    private static void validation() {
+        runJpaCode(em -> {
+           em.persist(new User("test-user"));
+           return null;
+        });
+    }
+
+    private static void hello() {
         Message m = runJpaCode(em -> {
             Message message = new Message();
             message.setText("Hello World!");
@@ -28,7 +39,6 @@ public class MainJpa {
         List<Message> l = runJpaCode(em -> (List<Message>) em.unwrap(Session.class).createCriteria(Message.class).list());
 
         l.stream().forEach(message -> System.out.println(message.getId()));
-
     }
 
 }
