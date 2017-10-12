@@ -1,9 +1,11 @@
 package jpa.models.tableperclass;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@Table(name = "TPC_CREDIT_CARD")
 public class CreditCard extends BillingDetails {
 
     @NotNull

@@ -21,6 +21,7 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
+        embeddedType();
 
     }
 
