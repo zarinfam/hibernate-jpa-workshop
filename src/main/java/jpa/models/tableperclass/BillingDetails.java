@@ -3,7 +3,7 @@ package jpa.models.tableperclass;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-@Entity
+@Entity(name = "TpcBillingDetails")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class BillingDetails {
 

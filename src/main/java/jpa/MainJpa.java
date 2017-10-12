@@ -21,12 +21,18 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
-        embeddedType();
+        insertSampleBillingDetails();
 
+        List<BillingDetails> bdList = fetchBillingDetails();
+
+        bdList.forEach(billingDetails -> {
+            if (billingDetails instanceof CreditCard) System.out.println("this is credit card");
+            else if (billingDetails instanceof BankAccount) System.out.println("this is bank account");
+        });
     }
 
     private static List<BillingDetails> fetchBillingDetails() {
-        return runJpaCode(em -> em.createQuery("from BillingDetails").getResultList());
+        return runJpaCode(em -> em.createQuery("from "+BillingDetails.class.getName()).getResultList());
     }
 
     private static void insertSampleBillingDetails() {

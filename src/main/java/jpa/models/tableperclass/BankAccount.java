@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-@Entity
+@Entity(name = "TpcBankAccount")
 @Table(name = "TPC_BANK_ACCOUNT")
 public class BankAccount extends BillingDetails {
 
