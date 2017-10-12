@@ -1,9 +1,11 @@
 package jpa;
 
 import jpa.models.*;
+import jpa.models.mappedsuperclass.BankAccount;
+import jpa.models.mappedsuperclass.BillingDetails;
+import jpa.models.mappedsuperclass.CreditCard;
 import org.hibernate.Session;
 
-import javax.persistence.Embedded;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigDecimal;
@@ -19,8 +21,24 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
-        embeddedType();
 
+    }
+
+    private static List<BillingDetails> fetchBillingDetails() {
+        return runJpaCode(em -> em.createQuery("from BillingDetails").getResultList());
+    }
+
+    private static void insertSampleBillingDetails() {
+        runJpaCode(em ->{
+
+            BillingDetails billingDetails = new BankAccount("Ali", "123456", "Pasargad", "4124aas");
+            em.persist(billingDetails);
+
+            billingDetails = new CreditCard("Ali", "1231599123", "12", "1400");
+            em.persist(billingDetails);
+
+           return null;
+        });
     }
 
     private static void embeddedType() {
