@@ -38,6 +38,14 @@ public class User {
         this.homeAddress = address;
     }
 
+    public Address getBillingAddress() {
+        return billingAddress;
+    }
+
+    public void setBillingAddress(Address billingAddress) {
+        this.billingAddress = billingAddress;
+    }
+
     public Address getHomeAddress() {
         return homeAddress;
     }

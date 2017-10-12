@@ -27,7 +27,9 @@ public class MainJpa {
         runJpaCode(em -> {
 
             Address address = new Address("Nahid sharghi", "12314","Tehran" );
+            Address billingAddress = new Address("Nahid gharbi", "32141","Shiraz" );
             User user = new User("Dotin", address);
+            user.setBillingAddress(billingAddress);
 
             em.persist(user);
 
