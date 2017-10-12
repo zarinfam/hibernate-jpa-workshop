@@ -17,7 +17,23 @@ public class User {
     @NotNull
     private String name;
 
+    @Embedded
+    private Address homeAddress;
+
     public User() {
+    }
+
+    public User(String name, Address address) {
+        this.name = name;
+        this.homeAddress = address;
+    }
+
+    public Address getHomeAddress() {
+        return homeAddress;
+    }
+
+    public void setHomeAddress(Address homeAddress) {
+        this.homeAddress = homeAddress;
     }
 
     public User(String name) {

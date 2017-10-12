@@ -3,6 +3,7 @@ package jpa;
 import jpa.models.*;
 import org.hibernate.Session;
 
+import javax.persistence.Embedded;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.math.BigDecimal;
@@ -18,8 +19,20 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
-        subselect();
+        embeddedType();
 
+    }
+
+    private static void embeddedType() {
+        runJpaCode(em -> {
+
+            Address address = new Address("Nahid sharghi", "12314","Tehran" );
+            User user = new User("Dotin", address);
+
+            em.persist(user);
+
+            return null;
+        });
     }
 
     private static void subselect() {
