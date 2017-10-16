@@ -20,23 +20,21 @@ import static jpa.util.EMF.runJpaCode;
 public class MainJpa {
 
     public static void main(String[] args) {
+        insertSampleBillingDetailsSingleTable();
 
-        insertSampleBillingDetails();
-
-        List<BillingDetails> bdList = fetchBillingDetails();
-
-        bdList.forEach(billingDetails -> {
-            if (billingDetails instanceof CreditCard) System.out.println("this is credit card");
-            else if (billingDetails instanceof BankAccount) System.out.println("this is bank account");
-        });
+        loadSingleTable().forEach(billingDetails -> System.out.println(billingDetails.getOwner()));
     }
 
-    private static List<BillingDetails> fetchBillingDetails() {
-        return runJpaCode(em -> em.createQuery("from "+BillingDetails.class.getName()).getResultList());
+    private static List<jpa.models.singletable.BillingDetails> loadSingleTable() {
+        return runJpaCode(em -> em.createQuery("from StBillingDetails" ).getResultList());
+    }
+
+    private static List<BillingDetails> fetchBillingDetailsMappedSuperClass() {
+        return runJpaCode(em -> em.createQuery("from " + BillingDetails.class.getName()).getResultList());
     }
 
     private static void insertSampleBillingDetails() {
-        runJpaCode(em ->{
+        runJpaCode(em -> {
 
             BillingDetails billingDetails = new BankAccount("Ali", "123456", "Pasargad", "4124aas");
             em.persist(billingDetails);
@@ -44,15 +42,29 @@ public class MainJpa {
             billingDetails = new CreditCard("Ali", "1231599123", "12", "1400");
             em.persist(billingDetails);
 
-           return null;
+            return null;
+        });
+    }
+
+    private static void insertSampleBillingDetailsSingleTable() {
+        runJpaCode(em -> {
+
+            jpa.models.singletable.BillingDetails billingDetails =
+                    new jpa.models.singletable.BankAccount("Ali", "123456", "Pasargad", "4124aas");
+            em.persist(billingDetails);
+
+            billingDetails = new jpa.models.singletable.CreditCard("Ali", "1231599123", "12", "1400");
+            em.persist(billingDetails);
+
+            return null;
         });
     }
 
     private static void embeddedType() {
         runJpaCode(em -> {
 
-            Address address = new Address("Nahid sharghi", "12314","Tehran" );
-            Address billingAddress = new Address("Nahid gharbi", "32141","Shiraz" );
+            Address address = new Address("Nahid sharghi", "12314", "Tehran");
+            Address billingAddress = new Address("Nahid gharbi", "32141", "Shiraz");
             User user = new User("Dotin", address);
             user.setBillingAddress(billingAddress);
 
@@ -63,8 +75,8 @@ public class MainJpa {
     }
 
     private static void subselect() {
-        runJpaCode(em ->{
-           long item1Id = initItemBidSummaryDb(em);
+        runJpaCode(em -> {
+            long item1Id = initItemBidSummaryDb(em);
 
 //            ItemBidSummary itemBidSummary = em.find(ItemBidSummary.class, item1Id);
 
@@ -72,9 +84,9 @@ public class MainJpa {
                     "select ibs from ItemBidSummary ibs where ibs.itemId = :id"
             );
             ItemBidSummary itemBidSummary =
-                    (ItemBidSummary)query.setParameter("id", item1Id).getSingleResult();
+                    (ItemBidSummary) query.setParameter("id", item1Id).getSingleResult();
 
-            System.out.println("number of bid = " +itemBidSummary.getNumberOfBids());
+            System.out.println("number of bid = " + itemBidSummary.getNumberOfBids());
 
             return null;
         });
@@ -101,8 +113,8 @@ public class MainJpa {
 
     private static void validation() {
         runJpaCode(em -> {
-           em.persist(new User("test-user"));
-           return null;
+            em.persist(new User("test-user"));
+            return null;
         });
     }
 
