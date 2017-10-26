@@ -20,13 +20,31 @@ import static jpa.util.EMF.runJpaCode;
 public class MainJpa {
 
     public static void main(String[] args) {
-        insertSampleBillingDetailsSingleTable();
 
-        loadSingleTable().forEach(billingDetails -> System.out.println(billingDetails.getOwner()));
+        bidItemOneToOne();
+
+    }
+
+    private static void bidItemOneToOne() {
+        runJpaCode(em -> {
+            Item item = new Item();
+            item.setDescription("Yadegari madar bozorg");
+            item.setName("Ghandon");
+
+            em.persist(item);
+
+            Bid bid = new Bid();
+            bid.setAmount(BigDecimal.valueOf(100));
+            bid.setItem(item);
+
+            em.persist(bid);
+
+            return null;
+        });
     }
 
     private static List<jpa.models.singletable.BillingDetails> loadSingleTable() {
-        return runJpaCode(em -> em.createQuery("from StBillingDetails" ).getResultList());
+        return runJpaCode(em -> em.createQuery("from StBillingDetails").getResultList());
     }
 
     private static List<BillingDetails> fetchBillingDetailsMappedSuperClass() {

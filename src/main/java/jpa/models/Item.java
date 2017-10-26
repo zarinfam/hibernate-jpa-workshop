@@ -18,6 +18,9 @@ public class Item {
     @GeneratedValue
     protected Long id;
 
+    @OneToOne(mappedBy = "item", fetch = FetchType.LAZY)
+    private Bid bid;
+
     @org.hibernate.annotations.Type(type = "yes_no")
     protected boolean verified = false;
 
