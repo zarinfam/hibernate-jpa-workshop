@@ -21,7 +21,7 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
-        manyToMany();
+        bidItemOneToOne();
 
     }
 
@@ -64,12 +64,12 @@ public class MainJpa {
             Bid bid2 = new Bid();
             bid2.setAmount(BigDecimal.valueOf(200));
 
-            item.addBid(bid);
-            item.addBid(bid2);
+//            item.addBid(bid);
+//            item.addBid(bid2);
 
             em.persist(item);
 
-            em.remove(item);
+//            em.remove(item);
 
             return null;
         });

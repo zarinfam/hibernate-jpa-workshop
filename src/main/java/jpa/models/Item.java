@@ -21,11 +21,8 @@ public class Item {
     @ManyToMany(mappedBy = "items")
     protected Set<Category> categories = new HashSet<Category>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
-    @org.hibernate.annotations.OnDelete(
-            action = org.hibernate.annotations.OnDeleteAction.CASCADE
-    )
-    private Set<Bid> bids = new HashSet<>();
+    @OneToOne(mappedBy = "item")
+    private Bid bid;
 
     @org.hibernate.annotations.Type(type = "yes_no")
     protected boolean verified = false;
@@ -165,17 +162,12 @@ public class Item {
         this.imageBlob = imageBlob;
     }
 
-    public Set<Bid> getBids() {
-        return bids;
+    public Bid getBid() {
+        return bid;
     }
 
-    public void setBids(Set<Bid> bids) {
-        this.bids = bids;
-    }
-
-    public void addBid(Bid bid) {
-        this.bids.add(bid);
-        bid.setItem(this);
+    public void setBid(Bid bid) {
+        this.bid = bid;
     }
 
     public Set<Category> getCategories() {
