@@ -21,8 +21,35 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
-        bidItemOneToOne();
+        manyToMany();
 
+    }
+
+    private static void manyToMany() {
+        runJpaCode(em -> {
+            Category someCategory = new Category("Some Category");
+            Category otherCategory = new Category("Other Category");
+
+            Item someItem = new Item();
+            someItem.setDescription("Yadegari madar bozorg");
+            someItem.setName("Ghandon");
+
+            Item otherItem = new Item();
+            otherItem.setDescription("Yadegari pedar bozorg");
+            otherItem.setName("Another Ghandon");
+
+            someCategory.getItems().add(someItem);
+//            someItem.getCategories().add(someCategory);
+            someCategory.getItems().add(otherItem);
+//            otherItem.getCategories().add(someCategory);
+            otherCategory.getItems().add(someItem);
+//            someItem.getCategories().add(otherCategory);
+
+            em.persist(someCategory);
+            em.persist(otherCategory);
+
+            return null;
+        });
     }
 
     private static void bidItemOneToOne() {
