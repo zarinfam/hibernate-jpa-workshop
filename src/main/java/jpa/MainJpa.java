@@ -21,7 +21,7 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
-        bidItemOneToOne();
+        manyToMany();
 
     }
 
@@ -38,15 +38,18 @@ public class MainJpa {
             otherItem.setDescription("Yadegari pedar bozorg");
             otherItem.setName("Another Ghandon");
 
-            someCategory.getItems().add(someItem);
-//            someItem.getCategories().add(someCategory);
-            someCategory.getItems().add(otherItem);
-//            otherItem.getCategories().add(someCategory);
-            otherCategory.getItems().add(someItem);
-//            someItem.getCategories().add(otherCategory);
+//            someCategory.getItems().add(someItem);
+            someItem.getCategories().add(someCategory);
+//            someCategory.getItems().add(otherItem);
+            otherItem.getCategories().add(someCategory);
+//            otherCategory.getItems().add(someItem);
+            someItem.getCategories().add(otherCategory);
 
             em.persist(someCategory);
             em.persist(otherCategory);
+
+            em.persist(someItem);
+            em.persist(otherItem);
 
             return null;
         });
@@ -64,12 +67,12 @@ public class MainJpa {
             Bid bid2 = new Bid();
             bid2.setAmount(BigDecimal.valueOf(200));
 
-//            item.addBid(bid);
-//            item.addBid(bid2);
+            item.addBid(bid);
+            item.addBid(bid2);
 
             em.persist(item);
 
-//            em.remove(item);
+            em.remove(item);
 
             return null;
         });

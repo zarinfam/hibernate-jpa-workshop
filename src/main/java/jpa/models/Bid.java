@@ -16,7 +16,7 @@ public class Bid {
     @NotNull
     protected BigDecimal amount;
 
-    @OneToOne(optional = false, fetch = FetchType.LAZY) // NOT NULL
+    @ManyToOne(optional = false, fetch = FetchType.LAZY) // NOT NULL
     @JoinColumn(name = "ITEM_ID") // Actually the default name
     protected Item item;
 
