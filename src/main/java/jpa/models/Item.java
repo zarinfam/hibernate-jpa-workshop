@@ -5,7 +5,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.sql.Blob;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 public class Item {
@@ -18,8 +18,14 @@ public class Item {
     @GeneratedValue
     protected Long id;
 
-    @OneToOne(mappedBy = "item", fetch = FetchType.LAZY)
-    private Bid bid;
+    @ManyToMany(mappedBy = "items")
+    protected Set<Category> categories = new HashSet<Category>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
+    @org.hibernate.annotations.OnDelete(
+            action = org.hibernate.annotations.OnDeleteAction.CASCADE
+    )
+    private Set<Bid> bids = new HashSet<>();
 
     @org.hibernate.annotations.Type(type = "yes_no")
     protected boolean verified = false;
@@ -157,6 +163,27 @@ public class Item {
 
     public void setImageBlob(Blob imageBlob) {
         this.imageBlob = imageBlob;
+    }
+
+    public Set<Bid> getBids() {
+        return bids;
+    }
+
+    public void setBids(Set<Bid> bids) {
+        this.bids = bids;
+    }
+
+    public void addBid(Bid bid) {
+        this.bids.add(bid);
+        bid.setItem(this);
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
 }

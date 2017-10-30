@@ -31,13 +31,18 @@ public class MainJpa {
             item.setDescription("Yadegari madar bozorg");
             item.setName("Ghandon");
 
-            em.persist(item);
-
             Bid bid = new Bid();
             bid.setAmount(BigDecimal.valueOf(100));
-            bid.setItem(item);
 
-            em.persist(bid);
+            Bid bid2 = new Bid();
+            bid2.setAmount(BigDecimal.valueOf(200));
+
+            item.addBid(bid);
+            item.addBid(bid2);
+
+            em.persist(item);
+
+            em.remove(item);
 
             return null;
         });
