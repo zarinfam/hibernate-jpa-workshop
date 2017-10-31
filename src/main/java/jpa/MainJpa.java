@@ -4,6 +4,7 @@ import jpa.models.*;
 import jpa.models.mappedsuperclass.BankAccount;
 import jpa.models.mappedsuperclass.BillingDetails;
 import jpa.models.mappedsuperclass.CreditCard;
+import jpa.util.EMF;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
@@ -21,8 +22,41 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
-        manyToMany();
 
+        Item item = new Item();
+
+        EntityManager em = EMF.getInstance().createEntityManager();
+        em.getTransaction().begin();
+        //start unit of work/////////////////////////////////
+
+        item.setName("Some Item");
+        em.persist(item);
+        Long ITEM_ID = item.getId();
+
+        item.setName("Some other Item");
+
+        Item findedItem = em.find(Item.class, ITEM_ID);
+        if (findedItem != null)
+            findedItem.setName("New Name");
+
+        //end unit of work/////////////////////////////////
+        em.getTransaction().commit();
+        em.close();
+
+
+//        runJpaCode(em -> {
+//
+//            return null;
+//        });
+
+    }
+
+    private static void sleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void manyToMany() {

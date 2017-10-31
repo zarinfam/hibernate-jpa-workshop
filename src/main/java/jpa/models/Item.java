@@ -39,7 +39,6 @@ public class Item {
     // Java 8 API
     // protected Instant reviewedOn;
 
-    @NotNull
     @Basic(fetch = FetchType.LAZY) // Defaults to EAGER
     protected String description;
 
@@ -67,19 +66,19 @@ public class Item {
     )
     protected double metricWeight;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(insertable = false, updatable = false)
-    @org.hibernate.annotations.Generated(
-        org.hibernate.annotations.GenerationTime.ALWAYS
-    )
-    protected Date lastModified;
-
-    @Column(insertable = false)
-    @org.hibernate.annotations.ColumnDefault("1.00")
-    @org.hibernate.annotations.Generated(
-        org.hibernate.annotations.GenerationTime.INSERT
-    )
-    protected BigDecimal initialPrice;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(insertable = false, updatable = false)
+//    @org.hibernate.annotations.Generated(
+//        org.hibernate.annotations.GenerationTime.ALWAYS
+//    )
+//    protected Date lastModified;
+//
+//    @Column(insertable = false)
+//    @org.hibernate.annotations.ColumnDefault("1.00")
+//    @org.hibernate.annotations.Generated(
+//        org.hibernate.annotations.GenerationTime.INSERT
+//    )
+//    protected BigDecimal initialPrice;
 
     /* 
         The <code>@Access(AccessType.PROPERTY)</code> setting on the <code>name</code> field switches this
@@ -129,13 +128,13 @@ public class Item {
         this.metricWeight = metricWeight;
     }
 
-    public Date getLastModified() {
-        return lastModified;
-    }
-
-    public BigDecimal getInitialPrice() {
-        return initialPrice;
-    }
+//    public Date getLastModified() {
+//        return lastModified;
+//    }
+//
+//    public BigDecimal getInitialPrice() {
+//        return initialPrice;
+//    }
 
     public Date getCreatedOn() {
         return createdOn;
