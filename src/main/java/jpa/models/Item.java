@@ -84,9 +84,11 @@ public class Item {
         The <code>@Access(AccessType.PROPERTY)</code> setting on the <code>name</code> field switches this
         particular property to runtime access through getter/setter methods by the JPA provider.
      */
-    @Access(AccessType.PROPERTY)
+//    @Access(AccessType.PROPERTY)
     @Column(name = "ITEM_NAME") // Mappings are still expected here!
     protected String name;
+
+
 
     /* 
         Hibernate will call <code>getName()</code> and <code>setName()</code> when loading and storing items.
@@ -175,6 +177,10 @@ public class Item {
     public void addBid(Bid bid) {
         this.bids.add(bid);
         bid.setItem(this);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Set<Category> getCategories() {

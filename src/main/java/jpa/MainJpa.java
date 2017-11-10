@@ -8,6 +8,7 @@ import jpa.util.EMF;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.List;
@@ -23,21 +24,26 @@ public class MainJpa {
     public static void main(String[] args) {
 
 
-        Item item = new Item();
+        Item persistenceItem = insertItem(new Item());
+//        Item item = new Item();
 
         EntityManager em = EMF.getInstance().createEntityManager();
         em.getTransaction().begin();
         //start unit of work/////////////////////////////////
 
+//        item.setName("Some Item");
+//        em.persist(item);
+//        Long ITEM_ID = item.getId();
+//
+//        item.setName("Some other Item");
+//
+        Item item = new Item();
         item.setName("Some Item");
-        em.persist(item);
-        Long ITEM_ID = item.getId();
 
-        item.setName("Some other Item");
-
-        Item findedItem = em.find(Item.class, ITEM_ID);
-        if (findedItem != null)
-            findedItem.setName("New Name");
+        item = em.merge(item);
+        System.out.println(em.contains(item));
+        em.remove(item);
+        sleep(10000);
 
         //end unit of work/////////////////////////////////
         em.getTransaction().commit();
@@ -58,6 +64,18 @@ public class MainJpa {
             e.printStackTrace();
         }
     }
+
+    private static Item insertItem(Item item) {
+        return runJpaCode(em -> {
+
+            item.setName("Some Item");
+            em.persist(item);
+            Long ITEM_ID = item.getId();
+
+            return item;
+        });
+    }
+
 
     private static void manyToMany() {
         runJpaCode(em -> {
