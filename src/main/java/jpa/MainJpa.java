@@ -8,11 +8,13 @@ import jpa.util.EMF;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static jpa.util.EMF.runJpaCode;
@@ -26,25 +28,52 @@ public class MainJpa {
 
 
         Item persistenceItem = insertItem(new Item());
+        insertItem(new Item());
+        insertItem(new Item());
 
-        System.out.println("------before start");
+        doAsync(() -> runJpaCode(em -> {
+            sleep(1000);
+            long totalPrice = 0;
 
-        updateItem(persistenceItem.getId(), 5000l);
-        System.out.println("------after 5000");
-        updateItem(persistenceItem.getId(), 0l);
-        System.out.println("------after 0");
+            List<Item> items =
+                    em.createQuery("from Item")
+                            .setLockMode(LockModeType.PESSIMISTIC_READ)
+                            .setHint("javax.persistence.lock.timeout", 5000)
+                            .getResultList();
+
+            for (Item item : items) {
+                totalPrice += item.getId();
+                sleep(1000);
+            }
+
+
+            return null;
+        }));
+
+        doAsync(() -> runJpaCode(em -> {
+            Item item = em.find(Item.class, persistenceItem.getId(), LockModeType.PESSIMISTIC_WRITE);
+            item.setName("New Name");
+            sleep(2000);
+            return null;
+        }));
+
 
     }
 
+    private static void doAsync(Supplier codeBlock) {
+        CompletableFuture.supplyAsync(codeBlock);
+    }
+
+
     private static void updateItem(Long id, Long waitTime) {
-        CompletableFuture.supplyAsync(() -> runJpaCode(em -> {
-            System.out.println("------start "+waitTime);
+        CompletableFuture.supplyAsync(()-> runJpaCode(em -> {
+            System.out.println("------start " + waitTime);
             Item item = em.find(Item.class, id);
             item.setName("New Name");
 
             sleep(waitTime);
 
-            System.out.println("------end "+waitTime);
+            System.out.println("------end " + waitTime);
 
             return null;
         }));
