@@ -12,6 +12,7 @@ import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.IntStream;
 
 import static jpa.util.EMF.runJpaCode;
@@ -25,36 +26,28 @@ public class MainJpa {
 
 
         Item persistenceItem = insertItem(new Item());
-//        Item item = new Item();
 
-        EntityManager em = EMF.getInstance().createEntityManager();
-        em.getTransaction().begin();
-        //start unit of work/////////////////////////////////
+        System.out.println("------before start");
 
-//        item.setName("Some Item");
-//        em.persist(item);
-//        Long ITEM_ID = item.getId();
-//
-//        item.setName("Some other Item");
-//
-        Item item = new Item();
-        item.setName("Some Item");
+        updateItem(persistenceItem.getId(), 5000l);
+        System.out.println("------after 5000");
+        updateItem(persistenceItem.getId(), 0l);
+        System.out.println("------after 0");
 
-        item = em.merge(item);
-        System.out.println(em.contains(item));
-        em.remove(item);
-        sleep(10000);
+    }
 
-        //end unit of work/////////////////////////////////
-        em.getTransaction().commit();
-        em.close();
+    private static void updateItem(Long id, Long waitTime) {
+        CompletableFuture.supplyAsync(() -> runJpaCode(em -> {
+            System.out.println("------start "+waitTime);
+            Item item = em.find(Item.class, id);
+            item.setName("New Name");
 
+            sleep(waitTime);
 
-//        runJpaCode(em -> {
-//
-//            return null;
-//        });
+            System.out.println("------end "+waitTime);
 
+            return null;
+        }));
     }
 
     private static void sleep(long time) {

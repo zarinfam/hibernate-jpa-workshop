@@ -10,6 +10,9 @@ import java.util.*;
 @Entity
 public class Item {
 
+    @Version
+    protected long version;
+
     /* 
        The <code>Item</code> entity defaults to field access, the <code>@Id</code> is on a field. (We
        have also moved the brittle <code>ID_GENERATOR</code> string into a constant.)
@@ -191,4 +194,7 @@ public class Item {
         this.categories = categories;
     }
 
+    public long getVersion() {
+        return version;
+    }
 }
