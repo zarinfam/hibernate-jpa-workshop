@@ -26,7 +26,47 @@ public class MainJpa {
 
     public static void main(String[] args) {
 
+        initialDbForFetch();
 
+        runJpaCode(em -> {
+
+            List<jpa.models.batch.Item> items = em.createQuery("select i from FItem i").getResultList();
+
+            for (jpa.models.batch.Item item : items) {
+                item.getBids().size();
+            }
+
+            return null;
+        });
+    }
+
+    private static void initialDbForFetch() {
+        runJpaCode(em -> {
+
+            IntStream.rangeClosed(1, 100).forEach(i -> {
+                jpa.models.batch.User seller
+                        = new jpa.models.batch.User("seller-"+i);
+
+                jpa.models.batch.Item item
+                        = new jpa.models.batch.Item("item-"+i, seller);
+
+                IntStream.rangeClosed(1,10).forEach(j ->{
+                    jpa.models.batch.User bidder
+                            = new jpa.models.batch.User("bidder-"+j);
+
+                    item.getBids().add(new jpa.models.batch.Bid(item, bidder, new BigDecimal(1000+j)));
+                });
+
+
+
+                em.persist(item);
+            });
+
+            return null;
+        });
+    }
+
+    private static void queryLockMode() {
         Item persistenceItem = insertItem(new Item());
         insertItem(new Item());
         insertItem(new Item());
@@ -56,8 +96,6 @@ public class MainJpa {
             sleep(2000);
             return null;
         }));
-
-
     }
 
     private static void doAsync(Supplier codeBlock) {
@@ -66,7 +104,7 @@ public class MainJpa {
 
 
     private static void updateItem(Long id, Long waitTime) {
-        CompletableFuture.supplyAsync(()-> runJpaCode(em -> {
+        CompletableFuture.supplyAsync(() -> runJpaCode(em -> {
             System.out.println("------start " + waitTime);
             Item item = em.find(Item.class, id);
             item.setName("New Name");
