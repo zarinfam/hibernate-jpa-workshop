@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity(name = "FUser")
-@org.hibernate.annotations.BatchSize(size = 31)
+//@org.hibernate.annotations.BatchSize(size = 31)
 @Table(name = "USERS")
 public class User {
 

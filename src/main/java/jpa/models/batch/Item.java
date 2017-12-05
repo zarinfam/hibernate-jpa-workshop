@@ -17,11 +17,17 @@ public class Item {
     protected String name;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @org.hibernate.annotations.Fetch(
+            org.hibernate.annotations.FetchMode.SELECT
+    )
     protected User seller;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.PERSIST)
-    @org.hibernate.annotations.BatchSize(size = 5)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "item", cascade = CascadeType.PERSIST)
+    @org.hibernate.annotations.Fetch(
+            org.hibernate.annotations.FetchMode.SELECT
+    )
+//    @org.hibernate.annotations.BatchSize(size = 5)
     protected Set<Bid> bids = new HashSet<>();
 
     public Item() {

@@ -10,8 +10,8 @@ import java.util.*;
 @Entity
 public class Item {
 
-    @Version
-    protected long version;
+//    @Version
+//    protected long version;
 
     /* 
        The <code>Item</code> entity defaults to field access, the <code>@Id</code> is on a field. (We
@@ -194,7 +194,4 @@ public class Item {
         this.categories = categories;
     }
 
-    public long getVersion() {
-        return version;
-    }
 }
