@@ -4,12 +4,12 @@ import jpa.models.*;
 import jpa.models.mappedsuperclass.BankAccount;
 import jpa.models.mappedsuperclass.BillingDetails;
 import jpa.models.mappedsuperclass.CreditCard;
-import jpa.util.EMF;
+import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
-import javax.persistence.PersistenceUnitUtil;
 import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.util.List;
@@ -28,13 +28,70 @@ public class MainJpa {
 
         initialDbForFetch();
 
+        Item item = new Item();
+        item.setDescription("test");
+        long id =insertItem(item).getId();
+
         runJpaCode(em -> {
 
-            List<jpa.models.batch.Item> items = em.createQuery("select i from FItem i").getResultList();
 
-            for (jpa.models.batch.Item item : items) {
-                item.getBids().size();
+//            em.persist(item);
+//
+            Session session = em.unwrap(Session.class);
+//            session.setFlushMode(FlushMode.AUTO);
+
+            Item item2 = new Item();
+            item2.setName("test insert");
+
+//            em.persist(item2);
+            session.save(item2);
+
+//            Item item1 = em.find(Item.class, id);
+            Item item1 = session.get(Item.class, id);
+            item1.setName("test load");
+
+
+//            session.saveOrUpdate(item1);
+//
+//            Query query = em.createNativeQuery(
+//                    "SELECT * from ITEM", Item.class
+//            );
+
+            SQLQuery query = session.createSQLQuery(
+                    "SELECT * from FBID b")
+                    .addEntity(jpa.models.batch.Bid.class)
+                    ;
+//            org.hibernate.Query query = session.createQuery(
+//                    "from Item b");
+//                    ;
+//            Query query = em.createQuery(
+//                    "from Item i")
+//                    ;
+
+//            Query query = em.createNativeQuery("SELECT * from FBID b", jpa.models.batch.Bid.class);
+
+//            query.getResultList();
+            query.list();
+
+//            bids.forEach(bid -> System.out.println(bid.getId()));
+
+
+
+
+
+            List<Object[]> tuples = session.createSQLQuery(
+                    "SELECT * " +
+                            "FROM FBID ph " +
+                            "JOIN FITEM pr ON ph.ITEM_ID = pr.ID" )
+                    .addEntity("bid", jpa.models.batch.Bid.class )
+                    .addJoin( "pr", "bid.item")
+//                    .setResultTransformer( Criteria.ROOT_ENTITY )
+                    .list();
+
+            for(Object[] tuple : tuples) {
             }
+
+
 
             return null;
         });
@@ -45,18 +102,17 @@ public class MainJpa {
 
             IntStream.rangeClosed(1, 100).forEach(i -> {
                 jpa.models.batch.User seller
-                        = new jpa.models.batch.User("seller-"+i);
+                        = new jpa.models.batch.User("seller-" + i);
 
                 jpa.models.batch.Item item
-                        = new jpa.models.batch.Item("item-"+i, seller);
+                        = new jpa.models.batch.Item("item-" + i, seller);
 
-                IntStream.rangeClosed(1,10).forEach(j ->{
+                IntStream.rangeClosed(1, 10).forEach(j -> {
                     jpa.models.batch.User bidder
-                            = new jpa.models.batch.User("bidder-"+j);
+                            = new jpa.models.batch.User("bidder-" + j);
 
-                    item.getBids().add(new jpa.models.batch.Bid(item, bidder, new BigDecimal(1000+j)));
+                    item.getBids().add(new jpa.models.batch.Bid(item, bidder, new BigDecimal(1000 + j)));
                 });
-
 
 
                 em.persist(item);
